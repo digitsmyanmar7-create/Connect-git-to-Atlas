@@ -1,0 +1,26 @@
+{
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "mongodb": "^7.0.0",
+    "mongoose": "^9.0.0"
+  },
+  "name": "connect-git-to-atlas",
+  "version": "1.0.0",
+  "description": "Connect git to Atlas",
+  "main": "mongo_db.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/digitsmyanmar7-create/Connect-git-to-Atlas.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/digitsmyanmar7-create/Connect-git-to-Atlas/issues"
+  },
+  "homepage": "https://github.com/digitsmyanmar7-create/Connect-git-to-Atlas#readme"
+}
