@@ -9,7 +9,7 @@ async function createDatabase() {
         await client.connect();
         
         // Specify your database name
-        const dbName = "myNewDatabase"; // This will be created automatically
+        const dbName = "myNewDatabase2"; // This will be created automatically
         
         // Get database reference
         const database = client.db(dbName);
