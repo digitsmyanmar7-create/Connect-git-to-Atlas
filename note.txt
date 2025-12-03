@@ -1,0 +1,9 @@
+nay  YiLaKYLpPIngzCgn
+
+mongodb+srv://nay:YiLaKYLpPIngzCgn@cluster1.nnr9uhl.mongodb.net/
+
+mongodb+srv://nay:YiLaKYLpPIngzCgn@cluster1.nnr9uhl.mongodb.net/
+
+mongodb+srv://nay:YiLaKYLpPIngzCgn@cluster1.nnr9uhl.mongodb.net/
+
+mongodb+srv://Nay:123@gittoatlas1.bldclct.mongodb.net/
