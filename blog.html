@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digits Myanmar - Blog</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-red: #F20707;
+            --primary-dark: #c80505;
+            --primary-light: #ff3838;
+            --primary-soft: rgba(242, 7, 7, 0.1);
+            --dark-bg: #24292e;
+            --text-primary: #333;
+            --text-secondary: #6c757d;
+            --light-bg: #f8f9fa;
+            --white: #ffffff;
+            --border-color: #e1e4e8;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+        
+        /* Fixed Header */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--dark-bg);
+            color: var(--white);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .logo span {
+            color: var(--primary-red);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        
+        nav a {
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 5px 0;
+            position: relative;
+        }
+        
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-red);
+            transition: width 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--primary-light);
+        }
+        
+        nav a:hover::after {
+            width: 100%;
+        }
+        
+        .search-icon {
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .search-icon:hover {
+            color: var(--primary-red);
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+        
+        .page-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark-bg);
+        }
+        
+        .page-title h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .page-title h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--primary-red);
+            border-radius: 2px;
+        }
+        
+        .page-title p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-top: 20px;
+        }
+        
+        /* Filters */
+        .filters {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-btn {
+            padding: 0.5rem 1.5rem;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--primary-red);
+            color: var(--white);
+            border-color: var(--primary-red);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(242, 7, 7, 0.2);
+        }
+        
+        /* Blog Posts */
+        .posts-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        
+        .post-card {
+            background: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            border-top: 3px solid transparent;
+        }
+        
+        .post-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(242, 7, 7, 0.15);
+            border-top-color: var(--primary-red);
+        }
+        
+        .post-image {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .post-card:hover .post-image img {
+            transform: scale(1.05);
+        }
+        
+        .post-category {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: var(--primary-red);
+            color: var(--white);
+            padding: 0.3rem 0.8rem;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .post-content {
+            padding: 1.5rem;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .post-date {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .post-date i {
+            color: var(--primary-red);
+        }
+        
+        .post-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            color: var(--dark-bg);
+            transition: color 0.3s ease;
+        }
+        
+        .post-card:hover .post-title {
+            color: var(--primary-red);
+        }
+        
+        .post-excerpt {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        
+        .post-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto;
+        }
+        
+        .post-author {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .author-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-soft);
+        }
+        
+        .author-name {
+            font-weight: 500;
+        }
+        
+        .read-more {
+            display: inline-block;
+            padding: 0.6rem 1.5rem;
+            background: var(--primary-red);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-align: center;
+            border: 2px solid transparent;
+        }
+        
+        .read-more:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(242, 7, 7, 0.3);
+        }
+        
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 3rem 2rem 2rem;
+            margin-top: 3rem;
+            background: var(--dark-bg);
+            color: var(--white);
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-red), var(--primary-light));
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin: 1.5rem 0 2rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 42px;
+            height: 42px;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+        
+        .social-links a:hover {
+            background: var(--primary-red);
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 5px 15px rgba(242, 7, 7, 0.3);
+        }
+        
+        footer p {
+            opacity: 0.8;
+            font-size: 0.9rem;
+        }
+        
+        /* Newsletter */
+        .newsletter {
+            background: linear-gradient(135deg, var(--dark-bg) 0%, rgba(36, 41, 46, 0.95) 100%);
+            padding: 3rem 2rem;
+            border-radius: 10px;
+            margin: 3rem 0;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+            border-top: 5px solid var(--primary-red);
+        }
+        
+        .newsletter::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(242,7,7,0.05)"/></svg>');
+            background-size: cover;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .newsletter p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .newsletter-form {
+            display: flex;
+            max-width: 500px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .newsletter-form input {
+            flex-grow: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 30px 0 0 30px;
+            font-size: 1rem;
+            transition: box-shadow 0.3s ease;
+        }
+        
+        .newsletter-form input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(242, 7, 7, 0.3);
+        }
+        
+        .newsletter-form button {
+            padding: 0 1.5rem;
+            background: var(--primary-red);
+            color: var(--white);
+            border: none;
+            border-radius: 0 30px 30px 0;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .newsletter-form button:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 3rem;
+        }
+        
+        .pagination a {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            background: var(--white);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            color: var(--text-primary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .pagination a:hover, .pagination a.active {
+            background: var(--primary-red);
+            color: var(--white);
+            border-color: var(--primary-red);
+        }
+        
+        /* Back to Top Button */
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--primary-red);
+            color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 999;
+            box-shadow: 0 3px 10px rgba(242, 7, 7, 0.3);
+        }
+        
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .back-to-top:hover {
+            background: var(--primary-dark);
+            transform: translateY(-5px);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                gap: 1.5rem;
+            }
+            
+            .posts-container {
+                grid-template-columns: 1fr;
+            }
+            
+            main {
+                margin-top: 140px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .newsletter-form input,
+            .newsletter-form button {
+                border-radius: 30px;
+                width: 100%;
+            }
+            
+            .page-title h1 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .post-card {
+                margin-bottom: 1.5rem;
+            }
+            
+            .post-title {
+                font-size: 1.2rem;
+            }
+            
+            .filters {
+                gap: 0.5rem;
+            }
+            
+            .filter-btn {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+            
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+        
+        /* Animation for cards */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .post-card {
+            animation: fadeInUp 0.5s ease-out;
+        }
+        
+        /* Category-specific colors */
+        .post-category.digital-marketing { background: var(--primary-red); }
+        .post-category.seo { background: #ff6b35; }
+        .post-category.social-media { background: #4361ee; }
+        .post-category.content { background: #4cc9f0; }
+        .post-category.analytics { background: #7209b7; }
+        .post-category.strategy { background: #f72585; }
+    </style>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-N6PJ2ZXYDX"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-N6PJ2ZXYDX');
+</script>
+</head>
+<body>
+    <!-- Fixed Header -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-bullhorn"></i>
+            <span>Digits</span>Myanmar Blog
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="#digital-marketing">Digital Marketing</a></li>
+                <li><a href="#seo">SEO</a></li>
+                <li><a href="#social-media">Social Media</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+        <div class="search-icon">
+            <i class="fas fa-search"></i>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <div class="page-title">
+            <h1>Digital Marketing Insights</h1>
+            <p>Latest trends, strategies, and tips from the Digital Marketing Association of Myanmar</p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-btn active">All Posts</div>
+            <div class="filter-btn">SEO</div>
+            <div class="filter-btn">Social Media</div>
+            <div class="filter-btn">Content Marketing</div>
+            <div class="filter-btn">Analytics</div>
+            <div class="filter-btn">Strategy</div>
+            <div class="filter-btn">Mobile Marketing</div>
+        </div>
+        
+        <div class="posts-container">
+            <!-- Post 1 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Digital Marketing Trends">
+                    <div class="post-category digital-marketing">Digital Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> June 20, 2023</div>
+                    <h2 class="post-title">2023 Digital Marketing Trends in Myanmar</h2>
+                    <p class="post-excerpt">Discover the latest digital marketing trends shaping Myanmar's market and how businesses can adapt to stay competitive in the digital landscape.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Ko Aung</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 2 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1542744095-fcf48d80b0fd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1176&q=80" alt="SEO Optimization">
+                    <div class="post-category seo">SEO</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> June 15, 2023</div>
+                    <h2 class="post-title">Local SEO Strategies for Myanmar Businesses</h2>
+                    <p class="post-excerpt">Learn how to optimize your website for local search in Myanmar and attract more customers from your target geographical area.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw Hla</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 3 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1169&q=80" alt="Social Media Marketing">
+                    <div class="post-category social-media">Social Media</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> June 10, 2023</div>
+                    <h2 class="post-title">Mastering Facebook Marketing in Myanmar</h2>
+                    <p class="post-excerpt">Essential tips and strategies for effective Facebook marketing tailored to the unique Myanmar audience and market conditions.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/22.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Mg Htun</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 4 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Content Strategy">
+                    <div class="post-category content">Content Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> June 5, 2023</div>
+                    <h2 class="post-title">Creating Engaging Content for Myanmar Audiences</h2>
+                    <p class="post-excerpt">Learn how to create content that resonates with Myanmar audiences, considering cultural nuances and local preferences.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/65.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw Su</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 5 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Analytics Dashboard">
+                    <div class="post-category analytics">Analytics</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> June 1, 2023</div>
+                    <h2 class="post-title">Measuring Digital Marketing ROI in Myanmar</h2>
+                    <p class="post-excerpt">A comprehensive guide to tracking and analyzing your digital marketing performance to maximize return on investment.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/45.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Ko Myo</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 6 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Mobile Marketing">
+                    <div class="post-category strategy">Strategy</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> May 25, 2023</div>
+                    <h2 class="post-title">Developing a Digital Marketing Strategy for Myanmar</h2>
+                    <p class="post-excerpt">Step-by-step guide to creating an effective digital marketing strategy that works in the Myanmar market context.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw Nwe</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 7 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80" alt="E-commerce">
+                    <div class="post-category digital-marketing">E-commerce</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> May 20, 2023</div>
+                    <h2 class="post-title">E-commerce Marketing Strategies for Myanmar</h2>
+                    <p class="post-excerpt">Essential digital marketing strategies for e-commerce businesses looking to succeed in Myanmar's growing online market.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Ko Zaw</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 8 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Influencer Marketing">
+                    <div class="post-category social-media">Influencer Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> May 15, 2023</div>
+                    <h2 class="post-title">Influencer Marketing in Myanmar: A Complete Guide</h2>
+                    <p class="post-excerpt">How to effectively leverage influencer marketing in Myanmar's unique social media landscape for maximum impact.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/22.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw Thiri</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 9 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551434678-e076c223a692?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Video Marketing">
+                    <div class="post-category content">Video Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> May 10, 2023</div>
+                    <h2 class="post-title">Video Content Strategy for Myanmar Market</h2>
+                    <p class="post-excerpt">Learn how to create engaging video content that captures the attention of Myanmar audiences across various platforms.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/12.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Ko Win</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 10 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Mobile Apps">
+                    <div class="post-category mobile">Mobile Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> May 5, 2023</div>
+                    <h2 class="post-title">Mobile-First Marketing for Myanmar Consumers</h2>
+                    <p class="post-excerpt">Strategies for optimizing your digital marketing efforts for Myanmar's mobile-first consumers and their unique usage patterns.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/42.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw May</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 11 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1547658719-da2b51169166?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1164&q=80" alt="Email Marketing">
+                    <div class="post-category digital-marketing">Email Marketing</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> April 28, 2023</div>
+                    <h2 class="post-title">Effective Email Marketing Campaigns in Myanmar</h2>
+                    <p class="post-excerpt">Best practices for creating email marketing campaigns that engage Myanmar audiences and drive conversions.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Ko Than</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+            
+            <!-- Post 12 -->
+            <article class="post-card">
+                <div class="post-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Marketing Tools">
+                    <div class="post-category analytics">Tools</div>
+                </div>
+                <div class="post-content">
+                    <div class="post-date"><i class="far fa-calendar"></i> April 22, 2023</div>
+                    <h2 class="post-title">Essential Digital Marketing Tools for Myanmar Marketers</h2>
+                    <p class="post-excerpt">A curated list of must-have tools and software for digital marketers operating in the Myanmar market.</p>
+                    <div class="post-meta">
+                        <div class="post-author">
+                            <img src="https://randomuser.me/api/portraits/women/52.jpg" alt="Author" class="author-avatar">
+                            <span class="author-name">Daw Ei</span>
+                        </div>
+                        <a href="#" class="read-more">Read More</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+        
+        <!-- Pagination -->
+        <div class="pagination">
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#"><i class="fas
